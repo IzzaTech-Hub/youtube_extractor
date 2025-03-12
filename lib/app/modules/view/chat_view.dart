@@ -11,18 +11,55 @@ class ChatView extends GetView<ChatController> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-          forceMaterialTransparency: true,
-          title: Text(
-            controller.transcript.videoTitle,
-            softWrap: true,
-            textScaler: TextScaler.linear(0.8),
-            overflow: TextOverflow.clip,
-            maxLines: 2,
-            textAlign: TextAlign.justify,
-          )),
+  centerTitle: true,
+  title: Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(
+        "Chat View",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: SizeConfig.blockSizeHorizontal * 5,
+          fontWeight: FontWeight.w500,
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      SizedBox(height: 8), // Space between title and bottom text
+    ],
+  ),
+  bottom: PreferredSize(
+    preferredSize: Size.fromHeight(10),
+    child: Padding(
+      padding: EdgeInsets.only(bottom: 8,right: 8,left: 8),
+      child: Text(
+        "Title: ${controller.transcript.videoTitle}",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    ),
+  ),
+  flexibleSpace: Container(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Color(0xFFFF2828), Color(0xFFD32F2F)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+    ),
+  ),
+  leading: IconButton(
+    icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+    onPressed: () => Get.back(),
+  ),
+),
       body: Column(
         children: [
           // Chat Messages List
@@ -38,7 +75,6 @@ class ChatView extends GetView<ChatController> {
                   if (index == controller.messages.length) {
                     return _typingIndicator();
                   }
-                  // if (index >= controller.initalMessagesCount) {
                   final message = controller.messages[index];
                   return _chatBubble(
                       message.parts!.isNotEmpty
@@ -47,7 +83,6 @@ class ChatView extends GetView<ChatController> {
                       message.role == 'user',
                       index,
                       controller.promptMessagesCount);
-                  // }
                 },
               );
             }),
@@ -69,16 +104,28 @@ class ChatView extends GetView<ChatController> {
         : Align(
             alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
             child: Container(
-              margin: EdgeInsets.symmetric(vertical: 4),
-              padding: EdgeInsets.all(12),
+              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              padding: EdgeInsets.all(16),
               constraints: BoxConstraints(maxWidth: 280),
               decoration: BoxDecoration(
-                color: isUser ? Colors.blue[700] : Colors.grey[300],
-                borderRadius: BorderRadius.circular(16),
+                color: isUser ? Color(0xFFFF2828) : Color(0xFFF1F1F1),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(isUser ? 20 : 0),
+                  topRight: Radius.circular(isUser ? 0 : 20),
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
               child: MarkdownBody(
                 data: text,
-                selectable: true, // Allows text selection
+                selectable: true,
                 styleSheet: MarkdownStyleSheet(
                   p: TextStyle(color: isUser ? Colors.white : Colors.black),
                 ),
@@ -91,22 +138,32 @@ class ChatView extends GetView<ChatController> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
+        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(16),
+          color: Color(0xFFF1F1F1),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Typing", style: TextStyle(color: Colors.black)),
-            SizedBox(width: 6),
             SizedBox(
               width: 12,
               height: 12,
-              child: CircularProgressIndicator(strokeWidth: 1.5),
+              child: CircularProgressIndicator(
+                strokeWidth: 1.5,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+              ),
             ),
+            SizedBox(width: 8),
+            Text("Typing...", style: TextStyle(color: Colors.grey)),
           ],
         ),
       ),
@@ -127,9 +184,12 @@ class ChatView extends GetView<ChatController> {
                   decoration: InputDecoration(
                     hintText: "Type a message...",
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24)),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      borderRadius: BorderRadius.circular(24),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Color(0xFFF1F1F1),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   ),
                 ),
               ),
@@ -137,17 +197,15 @@ class ChatView extends GetView<ChatController> {
             SizedBox(width: 8),
             controller.isConnected.value
                 ? IconButton(
-                    icon: Icon(Icons.send, color: Colors.blue),
-                    onPressed: () {
-                      _sendMessage();
-                    },
+                    icon: Icon(Icons.send, color: Color(0xFFFF2828)),
+                    onPressed: _sendMessage,
                   )
                 : IconButton(
                     onPressed: controller.showConnectionPopup,
                     icon: Icon(
                       Icons.signal_cellular_connected_no_internet_0_bar,
+                      color: Colors.grey,
                     ),
-                    highlightColor: Colors.white,
                   ),
           ],
         ),

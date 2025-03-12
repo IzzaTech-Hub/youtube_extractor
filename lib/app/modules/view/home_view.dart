@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:youtube_extracter/app/modules/controller/home_view_ctl.dart';
 import 'package:youtube_extracter/app/utills/size_config.dart';
@@ -15,7 +16,7 @@ class HomeView extends GetView<HomeViewCtl> {
       appBar: AppBar(
         title: Text("Transcript Extractor",style: TextStyle(
           fontSize: SizeConfig.blockSizeHorizontal * 5,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
           color: Colors.white,
           
           
@@ -86,9 +87,26 @@ class HomeView extends GetView<HomeViewCtl> {
                       
                       contentPadding: EdgeInsets.symmetric(
                           horizontal: 16, vertical: 14),
-                      prefixIcon: Icon(
-                        Icons.link,
-                        color: Colors.white,
+                      prefixIcon: GestureDetector(
+                        onTap: ()async{
+                           ClipboardData? clipboardData =
+                                  await Clipboard.getData(Clipboard.kTextPlain);
+                              if (clipboardData != null &&
+                                  clipboardData.text != null) {
+                                controller.urlController.text = clipboardData
+                                    .text!; // Set text to controller
+                                controller.urlController.selection =
+                                    TextSelection.fromPosition(
+                                  TextPosition(
+                                      offset: controller
+                                          .urlController.text.length),
+                                ); // Move cursor to the end
+                              }
+                        },
+                        child: Icon(
+                          Icons.link,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),

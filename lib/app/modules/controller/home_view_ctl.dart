@@ -29,64 +29,82 @@ class HomeViewCtl extends GetxController {
       videoTitle.value = "Unknown Title";
     }
   }
+  
+void startExtraction() async {
+  FocusManager.instance.primaryFocus?.unfocus(); // Hide keyboard
+  isLoading.value = true;
 
-  void startExtraction() async {
-    FocusManager.instance.primaryFocus?.unfocus(); // Hide keyboard
-    isLoading.value = true;
-    if (await checkNetworkConnection()) {
-      final videoUrl = urlController.text.trim();
+  if (await checkNetworkConnection()) {
+    final videoUrl = urlController.text.trim();
 
-      try {
-        if (videoUrl.isEmpty) {
-          Get.snackbar(
-            'Error',
-            'Please paste a valid YouTube URL.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red[400],
-            colorText: Colors.white,
-          );
-          return;
-        }
+    // YouTube URL validation regex
+    final youtubeRegex = RegExp(
+      r'^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})'
+    );
 
-        // // Simulate API call (replace with actual API call)
-        // Future.delayed(Duration(seconds: 3), () {
-        //   isLoading.value = false;
-        //   Get.snackbar(
-        //     'Success',
-        //     'Extraction complete! Check your results.',
-        //     snackPosition: SnackPosition.BOTTOM,
-        //     backgroundColor: Colors.green[400],
-        //     colorText: Colors.white,
-        //   );
-        // });
-
-        await fetchVideoDetails(videoUrl);
-        transcriptList.clear();
-        final captionScraper = YouTubeCaptionScraper();
-        final captionTracks = await captionScraper.getCaptionTracks(videoUrl);
-        final subtitles = await captionScraper.getSubtitles(captionTracks[0]);
-        responseStatus.value = 200;
-        print("Subtitles: $subtitles");
-        mappedTranscript.value = {
-          "transcriptList": subtitles,
-          "videoAuthor": videoAuthor.value,
-          "videoTitle": videoTitle.value
-        };
-        VideoDetails transcript = VideoDetails.fromMap(mappedTranscript);
-        transcriptList.value = transcript.transcriptStringWithTime();
-        print("transcriptList length ${transcriptList.length}");
-        navigateToChat();
-      } catch (e) {
+    try {
+      if (videoUrl.isEmpty || !youtubeRegex.hasMatch(videoUrl)) {
+        Get.snackbar(
+          'Error',
+          'Please enter a valid YouTube URL.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red[400],
+          colorText: Colors.white,
+        );
         isLoading.value = false;
-        responseStatus.value = 400;
-        // transcriptList.assignAll(["Error: Could not fetch transcript"]);
-      } finally {
-        isLoading.value = false;
+        return;
       }
-    } else {
+
+      // Fetch video details
+      await fetchVideoDetails(videoUrl);
+      transcriptList.clear();
+
+      final captionScraper = YouTubeCaptionScraper();
+      final captionTracks = await captionScraper.getCaptionTracks(videoUrl);
+
+      if (captionTracks.isEmpty) {
+        throw Exception("No captions available for this video.");
+      }
+
+      final subtitles = await captionScraper.getSubtitles(captionTracks[0]);
+
+      responseStatus.value = 200;
+      mappedTranscript.value = {
+        "transcriptList": subtitles,
+        "videoAuthor": videoAuthor.value,
+        "videoTitle": videoTitle.value
+      };
+
+      VideoDetails transcript = VideoDetails.fromMap(mappedTranscript);
+      transcriptList.value = transcript.transcriptStringWithTime();
+
+      print("transcriptList length ${transcriptList.length}");
+      navigateToChat();
+    } catch (e) {
+      responseStatus.value = 400;
+      Get.snackbar(
+        'Error',
+        'Could not fetch transcript. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red[400],
+        colorText: Colors.white,
+      );
+    } finally {
       isLoading.value = false;
     }
+  } else {
+    isLoading.value = false;
+    Get.snackbar(
+      'No Internet',
+      'Please check your internet connection.',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.orange[400],
+      colorText: Colors.white,
+    );
   }
+}
+
+
 
   Future<bool> checkNetworkConnection() async {
     final bool isConnected =
