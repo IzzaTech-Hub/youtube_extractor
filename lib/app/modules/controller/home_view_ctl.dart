@@ -1,39 +1,138 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:youtube_caption_scraper/youtube_caption_scraper.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+import 'package:youtube_extracter/app/data/video_details.dart';
+import 'package:youtube_extracter/app/routes/app_pages.dart';
 
-class HomeViewCtl extends GetxController{
-
-   final urlController = TextEditingController();
+class HomeViewCtl extends GetxController {
+  final urlController = TextEditingController();
   var isLoading = false.obs;
 
-  void startExtraction() {
-    final url = urlController.text.trim();
-    if (url.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please paste a valid YouTube URL.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red[400],
-        colorText: Colors.white,
-      );
-      return;
+  var transcriptList = <String>[].obs;
+  var videoTitle = "".obs;
+  var videoAuthor = "".obs;
+  Rx<int> responseStatus = 0.obs;
+  RxMap<String, dynamic> mappedTranscript = <String, dynamic>{}.obs;
+
+  Future<void> fetchVideoDetails(String videoUrl) async {
+    try {
+      final yt = YoutubeExplode();
+      final video = await yt.videos.get(videoUrl);
+      print("video title : $video");
+      videoTitle.value = video.title;
+      videoAuthor.value = video.author;
+      yt.close();
+    } catch (e) {
+      videoTitle.value = "Unknown Title";
     }
-
-    isLoading.value = true;
-
-    // Simulate API call (replace with actual API call)
-    Future.delayed(Duration(seconds: 3), () {
-      isLoading.value = false;
-      Get.snackbar(
-        'Success',
-        'Extraction complete! Check your results.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green[400],
-        colorText: Colors.white,
-      );
-    });
   }
+
+  void startExtraction() async {
+    FocusManager.instance.primaryFocus?.unfocus(); // Hide keyboard
+    isLoading.value = true;
+    if (await checkNetworkConnection()) {
+      final videoUrl = urlController.text.trim();
+
+      try {
+        if (videoUrl.isEmpty) {
+          Get.snackbar(
+            'Error',
+            'Please paste a valid YouTube URL.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red[400],
+            colorText: Colors.white,
+          );
+          return;
+        }
+
+        // // Simulate API call (replace with actual API call)
+        // Future.delayed(Duration(seconds: 3), () {
+        //   isLoading.value = false;
+        //   Get.snackbar(
+        //     'Success',
+        //     'Extraction complete! Check your results.',
+        //     snackPosition: SnackPosition.BOTTOM,
+        //     backgroundColor: Colors.green[400],
+        //     colorText: Colors.white,
+        //   );
+        // });
+
+        await fetchVideoDetails(videoUrl);
+        transcriptList.clear();
+        final captionScraper = YouTubeCaptionScraper();
+        final captionTracks = await captionScraper.getCaptionTracks(videoUrl);
+        final subtitles = await captionScraper.getSubtitles(captionTracks[0]);
+        responseStatus.value = 200;
+        print("Subtitles: $subtitles");
+        mappedTranscript.value = {
+          "transcriptList": subtitles,
+          "videoAuthor": videoAuthor.value,
+          "videoTitle": videoTitle.value
+        };
+        VideoDetails transcript = VideoDetails.fromMap(mappedTranscript);
+        transcriptList.value = transcript.transcriptStringWithTime();
+        print("transcriptList length ${transcriptList.length}");
+        navigateToChat();
+      } catch (e) {
+        isLoading.value = false;
+        responseStatus.value = 400;
+        // transcriptList.assignAll(["Error: Could not fetch transcript"]);
+      } finally {
+        isLoading.value = false;
+      }
+    } else {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> checkNetworkConnection() async {
+    final bool isConnected =
+        await InternetConnectionChecker.instance.hasConnection;
+    if (isConnected) {
+      print('Device is connected to the internet');
+      return true;
+    } else {
+      Get.snackbar("Internet Connection Failed",
+          "Failed to connect to internet, Please try again later.");
+      print('Device is not connected to the internet');
+      return false;
+    }
+  }
+
+  void navigateToChat() {
+    Get.toNamed(Routes.CHAT, arguments: [mappedTranscript.value]);
+  }
+
+  // void startExtraction() {
+  //   final url = urlController.text.trim();
+  //   if (url.isEmpty) {
+  //     Get.snackbar(
+  //       'Error',
+  //       'Please paste a valid YouTube URL.',
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.red[400],
+  //       colorText: Colors.white,
+  //     );
+  //     return;
+  //   }
+
+  //   isLoading.value = true;
+
+  //   // Simulate API call (replace with actual API call)
+  //   Future.delayed(Duration(seconds: 3), () {
+  //     isLoading.value = false;
+  //     Get.snackbar(
+  //       'Success',
+  //       'Extraction complete! Check your results.',
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.green[400],
+  //       colorText: Colors.white,
+  //     );
+  //   });
+  // }
 
   @override
   void onInit() {
