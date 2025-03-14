@@ -7,23 +7,27 @@ class VideoDetails {
   List<SubtitleLine> transcriptList;
   String videoTitle;
   String videoAuthor;
+  String videoDescription;
   VideoDetails(
       {required this.transcriptList,
       required this.videoAuthor,
-      required this.videoTitle});
+      required this.videoTitle,
+      required this.videoDescription});
 
   static fromMap(Map<String, dynamic> mappedTranscript) {
     return VideoDetails(
         transcriptList: mappedTranscript["transcriptList"],
         videoAuthor: mappedTranscript["videoAuthor"],
-        videoTitle: mappedTranscript["videoTitle"]);
+        videoTitle: mappedTranscript["videoTitle"],
+        videoDescription: mappedTranscript["videoDescription"]);
   }
 
   Map<String, dynamic> toMap() {
     return {
       "transcriptList": transcriptList,
       "videoAuthor": videoAuthor,
-      "videoTitle": videoTitle
+      "videoTitle": videoTitle,
+      "videoDescription": videoDescription
     };
   }
 
@@ -45,7 +49,8 @@ class VideoDetails {
 
   String transcriptToString() {
     String transcriptString = "";
-    transcriptList.forEach((transcript) => transcriptString + transcript.text);
+    transcriptList.forEach(
+        (transcript) => transcriptString = transcriptString + transcript.text);
     return transcriptString;
   }
 
@@ -98,11 +103,22 @@ class VideoDetails {
       Content.text(
           "The author/channel name of this video is $videoAuthor and Title of this video is $videoTitle"),
       Content.text("Noted. Thanks for providing information about the video"),
+      Content.text("Here's the video description, $videoDescription"),
+      Content.text("Thanks for providing the video description aswell"),
       Content.text(
           "The full transcript and details have been provided. You may now proceed with answering the user's questions."),
       Content.text("Noted. Ready to respond to the user's queries."),
     ]);
 
     return transcriptHistory;
+  }
+
+  List<Content> transcriptForSummary() {
+    List<List<String>> transcriptInPatches = transcriptToPatches();
+    List<Content> transcriptInString = <Content>[];
+    for (var patch in transcriptInPatches) {
+      transcriptInString.addAll([Content.text(patchToString(patch))]);
+    }
+    return transcriptInString;
   }
 }

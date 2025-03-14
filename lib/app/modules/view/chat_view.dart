@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:youtube_extracter/app/modules/controller/chat_controller.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:youtube_extracter/app/utills/colors.dart';
 import 'package:youtube_extracter/app/utills/size_config.dart';
 
 class ChatView extends GetView<ChatController> {
@@ -12,54 +13,55 @@ class ChatView extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-  centerTitle: true,
-  title: Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Text(
-        "Chat View",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: SizeConfig.blockSizeHorizontal * 5,
-          fontWeight: FontWeight.w500,
+        centerTitle: true,
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "AI Assistant",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: SizeConfig.blockSizeHorizontal * 5,
+                fontWeight: FontWeight.w500,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: 8), // Space between title and bottom text
+          ],
         ),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-      SizedBox(height: 8), // Space between title and bottom text
-    ],
-  ),
-  bottom: PreferredSize(
-    preferredSize: Size.fromHeight(10),
-    child: Padding(
-      padding: EdgeInsets.only(bottom: 8,right: 8,left: 8),
-      child: Text(
-        "Title: ${controller.transcript.videoTitle}",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 10,
-          fontWeight: FontWeight.w500,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(10),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 8, right: 8, left: 8),
+            child: Text(
+              "Title: ${controller.transcript.videoTitle}",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFFF2828), Color(0xFFD32F2F)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
       ),
-    ),
-  ),
-  flexibleSpace: Container(
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [Color(0xFFFF2828), Color(0xFFD32F2F)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-    ),
-  ),
-  leading: IconButton(
-    icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-    onPressed: () => Get.back(),
-  ),
-),
       body: Column(
         children: [
           // Chat Messages List
@@ -189,7 +191,8 @@ class ChatView extends GetView<ChatController> {
                     ),
                     filled: true,
                     fillColor: Color(0xFFF1F1F1),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   ),
                 ),
               ),
