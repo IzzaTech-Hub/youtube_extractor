@@ -129,6 +129,7 @@ class HomeViewCtl extends GetxController {
           backgroundColor: Colors.red[400],
           colorText: Colors.white,
         );
+        setToDefault();
       } finally {
         setToDefault(
             setVideoAuthor: false,
