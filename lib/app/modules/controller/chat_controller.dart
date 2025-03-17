@@ -10,7 +10,7 @@ import 'package:youtube_extracter/app/widgets/no_connection_widget.dart';
 class ChatController extends GetxController {
   var isTyping = false.obs;
   final model = GenerativeModel(
-    model: 'gemini-1.5-flash',
+    model: 'gemini-2.0-flash',
     apiKey: "AIzaSyAMqyKN3V21hNVLqYwpMBhVb2aZ2Yi0Jn4",
   );
   final RxList<Content> messages = <Content>[].obs;
