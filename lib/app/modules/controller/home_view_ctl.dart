@@ -23,6 +23,13 @@ class HomeViewCtl extends GetxController {
   var isUrlProcessed = false.obs;
   late VideoDetails transcript;
   bool isBackPressed = false;
+  List<String> loadingMotivationMessages = [
+    "Your time matters. We make it count.",
+    "Simplify. Summarize. Stay ahead.",
+    "Less waiting, more creating.",
+    "Designed for you, powered by AI.",
+    "Because every second counts."
+  ];
   final model = GenerativeModel(
     model: 'gemini-1.5-flash',
     apiKey: "AIzaSyAMqyKN3V21hNVLqYwpMBhVb2aZ2Yi0Jn4",

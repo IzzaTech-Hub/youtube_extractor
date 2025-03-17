@@ -109,7 +109,7 @@ class TranscriptView extends GetView<TranscriptController> {
             ),
           ),
           centerTitle: true,
-          backgroundColor: const Color(0xFFFF2828),
+          backgroundColor: AppColors.appBarColor,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
             onPressed: () => Get.back(),

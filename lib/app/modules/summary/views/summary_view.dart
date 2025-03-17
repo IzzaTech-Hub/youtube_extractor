@@ -108,7 +108,7 @@ class SummaryView extends GetView<SummaryController> {
             ),
           ),
           centerTitle: true,
-          backgroundColor: const Color(0xFFFF2828),
+          backgroundColor: AppColors.appBarColor,
           // actions: [
           //   IconButton(
           //     icon: Icon(Icons.copy,

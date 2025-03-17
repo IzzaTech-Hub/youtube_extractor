@@ -5,13 +5,17 @@ import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:youtube_extracter/app/data/video_details.dart';
+import 'package:youtube_extracter/app/utills/remoteconfig_variables.dart';
 import 'package:youtube_extracter/app/widgets/no_connection_widget.dart';
+import 'dart:developer' as developer;
 
 class ChatController extends GetxController {
   var isTyping = false.obs;
+
+  // developer.log("this is apiKey $apiKey");
   final model = GenerativeModel(
-    model: 'gemini-2.0-flash',
-    apiKey: "AIzaSyAMqyKN3V21hNVLqYwpMBhVb2aZ2Yi0Jn4",
+    model: RCVariables.geminiModel,
+    apiKey: RCVariables.apiKey,
   );
   final RxList<Content> messages = <Content>[].obs;
   late VideoDetails transcript;

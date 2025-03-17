@@ -51,7 +51,7 @@ class ChatView extends GetView<ChatController> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFFFF2828), Color(0xFFD32F2F)],
+              colors: [AppColors.appBarColor, Color.fromARGB(255, 193, 43, 43)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -73,7 +73,7 @@ class ChatView extends GetView<ChatController> {
                 itemCount: controller.messages.length +
                     (controller.isTyping.value ? 1 : 0),
                 itemBuilder: (context, index) {
-                  print("current on going index $index");
+                  // print("current on going index $index");
                   if (index == controller.messages.length) {
                     return _typingIndicator();
                   }
