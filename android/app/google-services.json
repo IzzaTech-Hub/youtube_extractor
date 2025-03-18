@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:985769316982:android:7ca35b0a04ca1fcbb24557",
         "android_client_info": {
-          "package_name": "com.example.youtube_extracter"
+          "package_name": "ai.video.summarizer.chatai.videochat"
         }
       },
       "oauth_client": [],

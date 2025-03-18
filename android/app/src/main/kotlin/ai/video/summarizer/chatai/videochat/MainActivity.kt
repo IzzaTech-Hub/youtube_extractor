@@ -1,4 +1,4 @@
-package com.example.youtube_extracter
+package ai.video.summarizer.chatai.videochat
 
 import io.flutter.embedding.android.FlutterActivity
 
