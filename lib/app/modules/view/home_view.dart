@@ -84,6 +84,7 @@ class HomeView extends GetView<HomeViewCtl> {
                               ),
                               verticalSpace(SizeConfig.blockSizeVertical * 2),
                               Text(
+                                textAlign: TextAlign.center,
                                 controller.videoAuthor.value != ""
                                     ? controller.videoAuthor.value
                                     : 'VidAssist AI',
@@ -437,117 +438,119 @@ class HomeView extends GetView<HomeViewCtl> {
   }
 
   Widget loadingWidget() {
-    return AnimateGradient(
-      duration: Duration(seconds: 4),
-      primaryBegin: Alignment.topLeft, // 🔻 Start from Bottom Left
-      primaryEnd: Alignment.center, // 🔺 Move towards Top Right
-      secondaryBegin: Alignment.center, // 🔺 Start from Top Right
-      secondaryEnd: Alignment.bottomRight, // 🔻 Move towards Bottom Left
-      primaryColors: const [
-        Color(0xFF8B0000), // 🔥 Darkest Deep Red (Bottom)
-        Color(0xFFB22222), // ❤️ Firebrick Red (Midway)
-        Color(0xFFD64545), // 🌅 Muted Warm Red (Top)
-      ],
-      secondaryColors: const [
-        Color(0xFFA52A2A), // 🔴 Dark Brick Red (Bottom)
-        Color(0xFFCC3A3A), // 🌟 Rich Bold Red (Midway)
-        Color(0xFFE06666), // 🌅 Soft Faded Red (Top)
-      ],
+    return Container(
+      child: AnimateGradient(
+        duration: Duration(seconds: 4),
+        primaryBegin: Alignment.topLeft, // 🔻 Start from Bottom Left
+        primaryEnd: Alignment.center, // 🔺 Move towards Top Right
+        secondaryBegin: Alignment.center, // 🔺 Start from Top Right
+        secondaryEnd: Alignment.bottomRight, // 🔻 Move towards Bottom Left
+        primaryColors: const [
+          Color(0xFF8B0000), // 🔥 Darkest Deep Red (Bottom)
+          Color(0xFFB22222), // ❤️ Firebrick Red (Midway)
+          Color(0xFFD64545), // 🌅 Muted Warm Red (Top)
+        ],
+        secondaryColors: const [
+          Color(0xFFA52A2A), // 🔴 Dark Brick Red (Bottom)
+          Color(0xFFCC3A3A), // 🌟 Rich Bold Red (Midway)
+          Color(0xFFE06666), // 🌅 Soft Faded Red (Top)
+        ],
 
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        // color: Colors.white,
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.3,
-            ),
-            Container(
-              margin:
-                  EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 12),
-              child: Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(
-                  color: Colors.white,
-                  size: SizeConfig.blockSizeHorizontal * 26,
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          // color: Colors.white,
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.3,
+              ),
+              Container(
+                margin:
+                    EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 12),
+                child: Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.white,
+                    size: SizeConfig.blockSizeHorizontal * 26,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.all(SizeConfig.blockSizeVertical * 4.5),
-              child: SizedBox(
-                height: SizeConfig.blockSizeVertical * 8,
-                child: Obx(() => Text(
-                      controller.loadingMessage.value,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.actor(
+              Container(
+                padding: EdgeInsets.all(SizeConfig.blockSizeVertical * 4.5),
+                child: SizedBox(
+                  height: SizeConfig.blockSizeVertical * 8,
+                  child: Obx(() => Text(
+                        controller.loadingMessage.value,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.actor(
+                            color: Colors.white,
+                            textStyle: TextStyle(
+                              fontSize: SizeConfig.blockSizeHorizontal * 6,
+                              fontWeight: FontWeight.w900,
+                            )),
+                      )),
+                ),
+              ),
+              SizedBox(
+                height: SizeConfig.blockSizeVertical * 20,
+              ),
+              SizedBox(
+                height: SizeConfig.blockSizeVertical * 3,
+                child: AnimatedTextKit(
+                  pause: Duration(milliseconds: 1200),
+                  repeatForever: true,
+                  animatedTexts: [
+                    RotateAnimatedText(
+                      controller.loadingMotivationMessages[0],
+                      textStyle: GoogleFonts.abel(
                           color: Colors.white,
                           textStyle: TextStyle(
-                            fontSize: SizeConfig.blockSizeHorizontal * 6,
+                            fontSize: SizeConfig.blockSizeHorizontal * 4.2,
                             fontWeight: FontWeight.w900,
                           )),
-                    )),
-              ),
-            ),
-            SizedBox(
-              height: SizeConfig.blockSizeVertical * 20,
-            ),
-            SizedBox(
-              height: SizeConfig.blockSizeVertical * 3,
-              child: AnimatedTextKit(
-                pause: Duration(milliseconds: 1200),
-                repeatForever: true,
-                animatedTexts: [
-                  RotateAnimatedText(
-                    controller.loadingMotivationMessages[0],
-                    textStyle: GoogleFonts.abel(
-                        color: Colors.white,
-                        textStyle: TextStyle(
-                          fontSize: SizeConfig.blockSizeHorizontal * 4.2,
-                          fontWeight: FontWeight.w900,
-                        )),
-                  ),
-                  RotateAnimatedText(
-                    controller.loadingMotivationMessages[1],
-                    textStyle: GoogleFonts.abel(
-                        color: Colors.white,
-                        textStyle: TextStyle(
-                          fontSize: SizeConfig.blockSizeHorizontal * 4.2,
-                          fontWeight: FontWeight.w900,
-                        )),
-                  ),
-                  RotateAnimatedText(
-                    controller.loadingMotivationMessages[2],
-                    textStyle: GoogleFonts.abel(
-                        color: Colors.white,
-                        textStyle: TextStyle(
-                          fontSize: SizeConfig.blockSizeHorizontal * 4.2,
-                          fontWeight: FontWeight.w900,
-                        )),
-                  ),
-                  RotateAnimatedText(
-                    controller.loadingMotivationMessages[3],
-                    textStyle: GoogleFonts.abel(
-                        color: Colors.white,
-                        textStyle: TextStyle(
-                          fontSize: SizeConfig.blockSizeHorizontal * 4.2,
-                          fontWeight: FontWeight.w900,
-                        )),
-                  ),
-                  RotateAnimatedText(
-                    controller.loadingMotivationMessages[4],
-                    textStyle: GoogleFonts.abel(
-                        color: Colors.white,
-                        textStyle: TextStyle(
-                          fontSize: SizeConfig.blockSizeHorizontal * 4.2,
-                          fontWeight: FontWeight.w900,
-                        )),
-                  )
-                ],
-              ),
-            )
-          ],
+                    ),
+                    RotateAnimatedText(
+                      controller.loadingMotivationMessages[1],
+                      textStyle: GoogleFonts.abel(
+                          color: Colors.white,
+                          textStyle: TextStyle(
+                            fontSize: SizeConfig.blockSizeHorizontal * 4.2,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    ),
+                    RotateAnimatedText(
+                      controller.loadingMotivationMessages[2],
+                      textStyle: GoogleFonts.abel(
+                          color: Colors.white,
+                          textStyle: TextStyle(
+                            fontSize: SizeConfig.blockSizeHorizontal * 4.2,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    ),
+                    RotateAnimatedText(
+                      controller.loadingMotivationMessages[3],
+                      textStyle: GoogleFonts.abel(
+                          color: Colors.white,
+                          textStyle: TextStyle(
+                            fontSize: SizeConfig.blockSizeHorizontal * 4.2,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    ),
+                    RotateAnimatedText(
+                      controller.loadingMotivationMessages[4],
+                      textStyle: GoogleFonts.abel(
+                          color: Colors.white,
+                          textStyle: TextStyle(
+                            fontSize: SizeConfig.blockSizeHorizontal * 4.2,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

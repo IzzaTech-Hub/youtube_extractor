@@ -10,6 +10,8 @@ import 'package:youtube_extracter/app/routes/app_pages.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:developer' as developer;
 
+import 'package:youtube_extracter/app/utills/remoteconfig_variables.dart';
+
 class HomeViewCtl extends GetxController {
   final urlController = TextEditingController();
   var isLoading = false.obs;
@@ -30,10 +32,6 @@ class HomeViewCtl extends GetxController {
     "Designed for you, powered by AI.",
     "Because every second counts."
   ];
-  final model = GenerativeModel(
-    model: 'gemini-1.5-flash',
-    apiKey: "AIzaSyAMqyKN3V21hNVLqYwpMBhVb2aZ2Yi0Jn4",
-  );
 
   Future<void> fetchVideoDetails(String videoUrl) async {
     try {
@@ -157,6 +155,10 @@ class HomeViewCtl extends GetxController {
 
   Future<void> generateSummary() async {
     try {
+      final model = GenerativeModel(
+        model: RCVariables.geminiModel,
+        apiKey: RCVariables.apiKey,
+      );
       // Indicate processing (if using a loading state)
       isLoading.value = true;
       loadingMessage.value = "Checking internet connection...";
@@ -171,7 +173,7 @@ class HomeViewCtl extends GetxController {
       }
       loadingMessage.value = "Building summary...";
 
-      List<Content> transcriptList = transcript.transcriptForSummary();
+      List<Content> transcriptList = await transcript.transcriptForSummary();
 
       if (transcriptList.isEmpty) {
         throw Exception("No transcript data available.");
@@ -180,17 +182,27 @@ class HomeViewCtl extends GetxController {
       final chat = model.startChat(history: transcriptList);
 
       var prompt =
-          """Generate a well-structured and beautifully formatted transcript based on the given raw transcript. The transcript should be properly segmented into paragraphs, ensuring readability and clarity. Use Markdown formatting to enhance the presentation, including:
+          """Generate a well-structured and clearly formatted summary of the given transcript.  
+Ensure the summary is segmented into paragraphs for readability.  
 
-Bold for speaker names (if applicable), followed by the corresponding timestamp in [hh:mm:ss] format.
-Headings (#, ##, ###, etc.) for different sections of the transcript, each preceded by a timestamp to indicate when the section begins.
-Bullet points or numbered lists for key points or structured content.
-Code blocks for any technical terms or important phrases (if relevant).
-Blockquotes for significant statements or key takeaways.
-Each major section or topic should start with a heading that includes a timestamp for easy navigation.
-Ensure the transcript maintains a natural flow while improving readability. The output should be polished, professional, and visually appealing when rendered in Markdown.""";
+Use Markdown formatting as follows:  
+- **Bold** speaker names, followed by a **relevant** timestamp in `[hh:mm:ss]` format to indicate major topic shifts.  
+- Use headings (`#`, `##`, `###`, etc.) to indicate key sections of the discussion.  
+- Highlight key points using bullet points or numbered lists when necessary.  
+- Format technical terms or significant phrases using code blocks.  
+- Use blockquotes to emphasize important statements or takeaways.  
 
-      var response = await chat.sendMessage(Content.text(prompt));
+Timestamps should be placed only at points where the topic significantly shifts, **not for every sentence**.  
+Ensure the summary flows naturally, maintaining clarity and coherence.  
+Deliver the response **as plain text**, without enclosing it in any container.  
+Do not include any introductory or concluding messages—only the structured summary itself.  
+
+
+""";
+
+      GenerateContentResponse response =
+          await chat.sendMessage(Content.text(prompt));
+      print("This is summary: ${response.text}");
 
       if (response.text == null || response.text!.trim().isEmpty) {
         // Retry once before throwing an error
@@ -209,7 +221,6 @@ Ensure the transcript maintains a natural flow while improving readability. The 
 
       loadingMessage.value = "Your transcript is ready! ";
       await Future.delayed(Duration(seconds: 1));
-      print("This is summary: ${response.text}");
       Get.toNamed(Routes.SUMMARY,
           arguments: [response.text, transcript], preventDuplicates: false);
 
@@ -240,7 +251,10 @@ Ensure the transcript maintains a natural flow while improving readability. The 
       );
 
       print("Error generating summary: $errorMessage");
-      setToDefault();
+      setToDefault(
+          setVideoAuthor: false,
+          setVideoTitle: false,
+          setIsUrlProcessed: false);
       // return "An issue occurred while generating the summary. Please try again.";
     } finally {
       // Remove loading state after execution
