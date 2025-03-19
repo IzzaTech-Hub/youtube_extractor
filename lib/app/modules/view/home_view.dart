@@ -15,7 +15,7 @@ class HomeView extends GetView<HomeViewCtl> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     return WillPopScope(
       onWillPop: () {
         return controller.backButtonHandle();
@@ -33,7 +33,8 @@ class HomeView extends GetView<HomeViewCtl> {
                     ),
                   ),
                   centerTitle: true,
-                  backgroundColor: AppColors.appBarColor,
+                  backgroundColor: 
+                  AppColors.appBarColor,
                 )
               : null,
           backgroundColor: AppColors.backgroundColor,
@@ -57,8 +58,8 @@ class HomeView extends GetView<HomeViewCtl> {
                               // colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
                               // colors: [Color(0xFFFF6D00), Color.fromARGB(255, 255, 208, 0)],
                               colors: [
-                                Color.fromARGB(255, 246, 67, 67),
-                                Color.fromARGB(255, 181, 38, 38),
+                                Color(0xFFF64343),
+                                Color(0xFFB52626),
                               ],
                               // colors: [Color(0xFFFF2828), Color(0xFFC40000)],
                               begin: Alignment.topLeft,
@@ -200,13 +201,13 @@ class HomeView extends GetView<HomeViewCtl> {
                               child: Icon(
                                 Icons.autorenew,
                                 color: Colors.red,
-                                size: SizeConfig.blockSizeHorizontal * 6.3,
+                                size: SizeConfig.blockSizeHorizontal * 5,
                               ),
                             ),
                             Text('Begin Processing',
                                 style: TextStyle(
                                   fontSize:
-                                      SizeConfig.blockSizeHorizontal * 4.1,
+                                      SizeConfig.blockSizeHorizontal * 3.3,
                                   color: Colors.red,
                                   fontWeight: FontWeight.w800,
                                   fontFamily: 'Poppins',
