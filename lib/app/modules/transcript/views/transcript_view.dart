@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:simple_icons/simple_icons.dart';
 import 'package:youtube_extracter/app/utills/colors.dart';
 import 'package:youtube_extracter/app/utills/size_config.dart';
+import 'package:youtube_extracter/app/widgets/start_feedback_widget.dart';
 
 import '../controllers/transcript_controller.dart';
 
@@ -15,18 +16,23 @@ class TranscriptView extends GetView<TranscriptController> {
   const TranscriptView({super.key});
   @override
   Widget build(BuildContext context) {
+    int widgetSize = 12;
     SizeConfig().init(context); // Initialize SizeConfig
     AppColors();
 
     return Scaffold(
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: ExpandableFab(
+        type: ExpandableFabType.fan,
+        distance: 105,
+        fanAngle: 100,
+        duration: Durations.long1,
         openButtonBuilder: RotateFloatingActionButtonBuilder(
-            backgroundColor: AppColors.fabMainButtonBackground,
+            backgroundColor: AppColors.fabSideButtonBackground,
             foregroundColor: const Color.fromARGB(255, 243, 243, 243),
             child: Icon(
               SimpleIcons.element,
-              size: SizeConfig.blockSizeHorizontal * 7,
+              size: SizeConfig.blockSizeHorizontal * 7.7,
             )),
         closeButtonBuilder: RotateFloatingActionButtonBuilder(
             foregroundColor: Colors.white,
@@ -35,6 +41,10 @@ class TranscriptView extends GetView<TranscriptController> {
         overlayStyle: ExpandableFabOverlayStyle(
             blur: 4, color: Color.fromARGB(64, 255, 255, 255)),
         children: [
+          StarFeedbackWidget(
+            size: widgetSize,
+            mainContext: context,
+          ),
           Material(
             borderRadius: BorderRadius.circular(30),
             color: AppColors.fabSideButtonBackground,
@@ -44,8 +54,8 @@ class TranscriptView extends GetView<TranscriptController> {
                 controller.navigateToChat();
               },
               child: Container(
-                width: SizeConfig.blockSizeHorizontal * 13,
-                height: SizeConfig.blockSizeHorizontal * 13,
+                width: SizeConfig.blockSizeHorizontal * widgetSize,
+                height: SizeConfig.blockSizeHorizontal * widgetSize,
                 child: Icon(
                   color: const Color.fromARGB(255, 255, 255, 255),
                   size: SizeConfig.blockSizeHorizontal * 6,
@@ -63,12 +73,12 @@ class TranscriptView extends GetView<TranscriptController> {
                 Clipboard.setData(
                     ClipboardData(text: controller.transcriptString.value));
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Transcript copied to clipboard!")),
+                  SnackBar(content: Text("Summary copied to clipboard!")),
                 );
               },
               child: Container(
-                width: SizeConfig.blockSizeHorizontal * 13,
-                height: SizeConfig.blockSizeHorizontal * 13,
+                width: SizeConfig.blockSizeHorizontal * widgetSize,
+                height: SizeConfig.blockSizeHorizontal * widgetSize,
                 child: Icon(
                   color: const Color.fromARGB(255, 255, 255, 255),
                   size: SizeConfig.blockSizeHorizontal * 6,
@@ -84,11 +94,11 @@ class TranscriptView extends GetView<TranscriptController> {
               borderRadius: BorderRadius.circular(30),
               onTap: () {
                 Share.share(controller.transcriptString.value,
-                    subject: "Video Transcript");
+                    subject: "Video Summary");
               },
               child: Container(
-                width: SizeConfig.blockSizeHorizontal * 13,
-                height: SizeConfig.blockSizeHorizontal * 13,
+                width: SizeConfig.blockSizeHorizontal * widgetSize,
+                height: SizeConfig.blockSizeHorizontal * widgetSize,
                 child: Icon(
                   color: const Color.fromARGB(255, 255, 255, 255),
                   size: SizeConfig.blockSizeHorizontal * 6,
