@@ -22,12 +22,12 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
     "Misinformation",
     "Irrelevant content",
     "Offensive or inappropriate",
-    "Poorly structured slides",
+    "Poorly structured ",
     "Other"
   ];
   final List<String> positiveOptions = [
     "Quick response",
-    "Well-designed slides",
+    "Well-designed structured",
     "Accurate and relevant content",
     "Easy to understand",
     "Useful and informative",

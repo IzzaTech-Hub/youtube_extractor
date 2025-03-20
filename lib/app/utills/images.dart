@@ -5,5 +5,4 @@ class AppImages {
 
 // Images
 
-  static const splash = "assets/images/splash.png";
 }
