@@ -2,8 +2,10 @@ import 'package:animate_gradient/animate_gradient.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_launch_store/flutter_launch_store.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:simple_icons/simple_icons.dart';
 import 'package:youtube_extracter/app/modules/controller/home_view_ctl.dart';
@@ -33,8 +35,7 @@ class HomeView extends GetView<HomeViewCtl> {
                     ),
                   ),
                   centerTitle: true,
-                  backgroundColor: 
-                  AppColors.appBarColor,
+                  backgroundColor: AppColors.appBarColor,
                 )
               : null,
           backgroundColor: AppColors.backgroundColor,
@@ -100,10 +101,85 @@ class HomeView extends GetView<HomeViewCtl> {
                               controller.isUrlProcessed.value
                                   ? optionsWidget()
                                   : urlAndExtract(),
+                              verticalSpace(SizeConfig.blockSizeVertical * 5),
+                              Container(
+                                alignment: Alignment.bottomCenter,
+                                width: double.infinity,
+                                child: Text(
+                                  "Made with ❤️ by Sawanlimo",
+                                  style: GoogleFonts.alata(
+                                      color: Colors.white,
+                                      fontSize:
+                                          SizeConfig.blockSizeHorizontal * 3.5,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              )
                             ],
                           ),
                         ),
                       ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: SizeConfig.blockSizeVertical * 10,
+                          margin: EdgeInsets.only(
+                              top: SizeConfig.blockSizeVertical * 23),
+                          width: double.infinity,
+                          child: GestureDetector(
+                            onTap: () async {
+                              final InAppReview inAppReview =
+                                  InAppReview.instance;
+
+                              inAppReview.openStoreListing(
+                                  appStoreId: '...', microsoftStoreId: '...');
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      bottom:
+                                          SizeConfig.blockSizeVertical * 0.5),
+                                  child: Text(
+                                    "Rate Us",
+                                    style: GoogleFonts.alata(
+                                        color: Colors.black,
+                                        fontSize:
+                                            SizeConfig.blockSizeHorizontal *
+                                                3.5,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.black,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.black,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.black,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.black,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.black,
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
