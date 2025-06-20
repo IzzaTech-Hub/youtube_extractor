@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.5.3
@@ -48,6 +48,13 @@ dependencies:
   flutter_expandable_fab: ^2.3.0
   share_plus: ^10.1.4
   fluttertoast: ^8.2.12
+  animate_gradient: ^0.0.3
+  animated_text_kit: ^4.2.3
+  firebase_remote_config: ^5.4.2
+  firebase_core: ^3.12.1
+  cloud_firestore: ^5.6.5
+  in_app_review: ^2.0.10
+  flutter_launch_store: ^1.0.8
   
 dev_dependencies:
   flutter_test:
@@ -59,9 +66,16 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  change_app_package_name: ^1.5.0
+  flutter_launcher_icons: ^0.14.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: false
+  image_path: "assets/icon/main_icon.png"
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -72,8 +86,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/icon/
+    - assets/images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

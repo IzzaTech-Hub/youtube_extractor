@@ -9,24 +9,30 @@ import 'package:simple_icons/simple_icons.dart';
 import 'package:youtube_extracter/app/modules/summary/controllers/summary_controller.dart';
 import 'package:youtube_extracter/app/utills/colors.dart';
 import 'package:youtube_extracter/app/utills/size_config.dart';
+import 'package:youtube_extracter/app/widgets/start_feedback_widget.dart';
 
 class SummaryView extends GetView<SummaryController> {
   const SummaryView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    int widgetSize = 12;
     SizeConfig().init(context); // Initialize SizeConfig
     AppColors();
 
     return Scaffold(
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: ExpandableFab(
+        type: ExpandableFabType.fan,
+        distance: 105,
+        fanAngle: 100,
+        duration: Durations.long1,
         openButtonBuilder: RotateFloatingActionButtonBuilder(
-            backgroundColor: AppColors.fabMainButtonBackground,
+            backgroundColor: AppColors.fabSideButtonBackground,
             foregroundColor: const Color.fromARGB(255, 243, 243, 243),
             child: Icon(
               SimpleIcons.element,
-              size: SizeConfig.blockSizeHorizontal * 7,
+              size: SizeConfig.blockSizeHorizontal * 7.7,
             )),
         closeButtonBuilder: RotateFloatingActionButtonBuilder(
             foregroundColor: Colors.white,
@@ -35,6 +41,10 @@ class SummaryView extends GetView<SummaryController> {
         overlayStyle: ExpandableFabOverlayStyle(
             blur: 4, color: Color.fromARGB(64, 255, 255, 255)),
         children: [
+          StarFeedbackWidget(
+            size: widgetSize,
+            mainContext: context,
+          ),
           Material(
             borderRadius: BorderRadius.circular(30),
             color: AppColors.fabSideButtonBackground,
@@ -44,8 +54,8 @@ class SummaryView extends GetView<SummaryController> {
                 controller.navigateToChat();
               },
               child: Container(
-                width: SizeConfig.blockSizeHorizontal * 13,
-                height: SizeConfig.blockSizeHorizontal * 13,
+                width: SizeConfig.blockSizeHorizontal * widgetSize,
+                height: SizeConfig.blockSizeHorizontal * widgetSize,
                 child: Icon(
                   color: const Color.fromARGB(255, 255, 255, 255),
                   size: SizeConfig.blockSizeHorizontal * 6,
@@ -67,8 +77,8 @@ class SummaryView extends GetView<SummaryController> {
                 );
               },
               child: Container(
-                width: SizeConfig.blockSizeHorizontal * 13,
-                height: SizeConfig.blockSizeHorizontal * 13,
+                width: SizeConfig.blockSizeHorizontal * widgetSize,
+                height: SizeConfig.blockSizeHorizontal * widgetSize,
                 child: Icon(
                   color: const Color.fromARGB(255, 255, 255, 255),
                   size: SizeConfig.blockSizeHorizontal * 6,
@@ -86,8 +96,8 @@ class SummaryView extends GetView<SummaryController> {
                 Share.share(controller.summary.value, subject: "Video Summary");
               },
               child: Container(
-                width: SizeConfig.blockSizeHorizontal * 13,
-                height: SizeConfig.blockSizeHorizontal * 13,
+                width: SizeConfig.blockSizeHorizontal * widgetSize,
+                height: SizeConfig.blockSizeHorizontal * widgetSize,
                 child: Icon(
                   color: const Color.fromARGB(255, 255, 255, 255),
                   size: SizeConfig.blockSizeHorizontal * 6,
@@ -108,7 +118,7 @@ class SummaryView extends GetView<SummaryController> {
             ),
           ),
           centerTitle: true,
-          backgroundColor: const Color(0xFFFF2828),
+          backgroundColor: AppColors.appBarColor,
           // actions: [
           //   IconButton(
           //     icon: Icon(Icons.copy,

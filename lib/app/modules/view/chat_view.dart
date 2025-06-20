@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:youtube_extracter/app/modules/controller/chat_controller.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:youtube_extracter/app/utills/colors.dart';
 import 'package:youtube_extracter/app/utills/size_config.dart';
+import 'package:youtube_extracter/app/widgets/feedback_widget.dart';
 
 class ChatView extends GetView<ChatController> {
   final TextEditingController textController = TextEditingController();
@@ -51,7 +54,7 @@ class ChatView extends GetView<ChatController> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFFFF2828), Color(0xFFD32F2F)],
+              colors: [AppColors.appBarColor, Color.fromARGB(255, 193, 43, 43)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -73,7 +76,7 @@ class ChatView extends GetView<ChatController> {
                 itemCount: controller.messages.length +
                     (controller.isTyping.value ? 1 : 0),
                 itemBuilder: (context, index) {
-                  print("current on going index $index");
+                  // print("current on going index $index");
                   if (index == controller.messages.length) {
                     return _typingIndicator();
                   }
@@ -84,7 +87,8 @@ class ChatView extends GetView<ChatController> {
                           : "No content",
                       message.role == 'user',
                       index,
-                      controller.promptMessagesCount);
+                      controller.promptMessagesCount,
+                      context);
                 },
               );
             }),
@@ -99,41 +103,118 @@ class ChatView extends GetView<ChatController> {
     );
   }
 
-  Widget _chatBubble(
-      String text, bool isUser, int currentIndex, int promptMessageCount) {
+  Widget _chatBubble(String text, bool isUser, int currentIndex,
+      int promptMessageCount, BuildContext context) {
     return currentIndex <= promptMessageCount - 1
         ? Container()
-        : Align(
-            alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              padding: EdgeInsets.all(16),
-              constraints: BoxConstraints(maxWidth: 280),
-              decoration: BoxDecoration(
-                color: isUser ? Color(0xFFFF2828) : Color(0xFFF1F1F1),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(isUser ? 20 : 0),
-                  topRight: Radius.circular(isUser ? 0 : 20),
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
+        : Container(
+            padding:
+                EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 0.5),
+            child: Column(
+              children: [
+                Align(
+                  alignment:
+                      isUser ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Container(
+                    margin: EdgeInsets.only(
+                        top: SizeConfig.blockSizeHorizontal * 2,
+                        bottom: SizeConfig.blockSizeHorizontal * 2,
+                        right: SizeConfig.blockSizeHorizontal * 1.2,
+                        left: SizeConfig.blockSizeHorizontal * 2),
+                    padding: EdgeInsets.all(16),
+                    constraints:
+                        BoxConstraints(maxWidth: SizeConfig.screenWidth * 0.7),
+                    decoration: BoxDecoration(
+                      color: isUser
+                          ? Color(0xFFFF2828)
+                          : Color.fromARGB(255, 255, 255, 255),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(isUser ? 20 : 0),
+                        topRight: Radius.circular(isUser ? 0 : 20),
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: MarkdownBody(
+                      data: text,
+                      selectable: true,
+                      styleSheet: MarkdownStyleSheet(
+                        p: TextStyle(
+                            color: isUser ? Colors.white : Colors.black),
+                      ),
+                    ),
                   ),
-                ],
-              ),
-              child: MarkdownBody(
-                data: text,
-                selectable: true,
-                styleSheet: MarkdownStyleSheet(
-                  p: TextStyle(color: isUser ? Colors.white : Colors.black),
                 ),
-              ),
+                isUser
+                    ? Container()
+                    : Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(
+                                left: SizeConfig.blockSizeHorizontal * 5),
+                            child: FeedbackWidget(),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(
+                                left: SizeConfig.blockSizeHorizontal * 3),
+                            child: CopyWidget(text, context),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(
+                                left: SizeConfig.blockSizeHorizontal * 1),
+                            child: ShareWidget(text),
+                          ),
+                        ],
+                      )
+              ],
             ),
           );
+  }
+
+  InkWell ShareWidget(String text) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(30),
+      onTap: () {
+        Share.share(text, subject: "Video Transcript");
+      },
+      child: Container(
+        width: SizeConfig.blockSizeHorizontal * 6,
+        height: SizeConfig.blockSizeHorizontal * 6,
+        child: Icon(
+          color: Colors.grey,
+          size: SizeConfig.blockSizeHorizontal * 4.3,
+          Icons.share,
+        ),
+      ),
+    );
+  }
+
+  InkWell CopyWidget(String text, BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(30),
+      onTap: () {
+        Clipboard.setData(ClipboardData(text: text));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Summary copied to clipboard!")),
+        );
+      },
+      child: Container(
+        width: SizeConfig.blockSizeHorizontal * 6,
+        height: SizeConfig.blockSizeHorizontal * 6,
+        child: Icon(
+          color: Colors.grey,
+          size: SizeConfig.blockSizeHorizontal * 4.3,
+          Icons.copy,
+        ),
+      ),
+    );
   }
 
   Widget _typingIndicator() {
@@ -143,7 +224,7 @@ class ChatView extends GetView<ChatController> {
         margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Color(0xFFF1F1F1),
+          color: Color.fromARGB(255, 255, 255, 255),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
@@ -165,7 +246,9 @@ class ChatView extends GetView<ChatController> {
               ),
             ),
             SizedBox(width: 8),
-            Text("Typing...", style: TextStyle(color: Colors.grey)),
+            Text("Typing...",
+                style:
+                    TextStyle(color: const Color.fromARGB(255, 111, 111, 111))),
           ],
         ),
       ),
@@ -190,7 +273,7 @@ class ChatView extends GetView<ChatController> {
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: Color(0xFFF1F1F1),
+                    fillColor: Color.fromARGB(255, 253, 255, 255),
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   ),

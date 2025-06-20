@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:youtube_extracter/app/modules/binding/splash_binding.dart';
+import 'package:youtube_extracter/app/modules/view/splash_view.dart';
 
 import '../modules/binding/chat_binding.dart';
 import '../modules/binding/home_view_binding.dart';
@@ -16,9 +18,14 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.HOMEVIEW;
+  static const INITIAL = Routes.SPLASHVIEW;
 
   static final routes = [
+    GetPage(
+      name: _Paths.SPLASHVIEW,
+      page: () => SplashScreen(),
+      binding: SplashBinding(),
+    ),
     GetPage(
       name: _Paths.HOMEVIEW,
       page: () => HomeView(),

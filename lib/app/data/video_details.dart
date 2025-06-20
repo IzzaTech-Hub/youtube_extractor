@@ -113,7 +113,7 @@ class VideoDetails {
     return transcriptHistory;
   }
 
-  List<Content> transcriptForSummary() {
+  Future<List<Content>> transcriptForSummary() async {
     List<List<String>> transcriptInPatches = transcriptToPatches();
     List<Content> transcriptInString = <Content>[];
     for (var patch in transcriptInPatches) {

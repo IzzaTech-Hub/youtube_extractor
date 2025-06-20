@@ -1,7 +1,11 @@
+import 'package:animate_gradient/animate_gradient.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_launch_store/flutter_launch_store.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:simple_icons/simple_icons.dart';
 import 'package:youtube_extracter/app/modules/controller/home_view_ctl.dart';
@@ -13,25 +17,27 @@ class HomeView extends GetView<HomeViewCtl> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    return Obx(
-      () => WillPopScope(
-        onWillPop: () {
-          return controller.backButtonHandle();
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              "Transcript Extractor",
-              style: TextStyle(
-                fontSize: SizeConfig.blockSizeHorizontal * 5,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-            centerTitle: true,
-            backgroundColor: Color(0xFFFF2828),
-          ),
+    // SizeConfig().init(context);
+    return WillPopScope(
+      onWillPop: () {
+        return controller.backButtonHandle();
+      },
+      child: Obx(
+        () => Scaffold(
+          appBar: !controller.isLoading.value
+              ? AppBar(
+                  title: Text(
+                    "VidAssist AI – Your Video Companion",
+                    style: TextStyle(
+                      fontSize: SizeConfig.blockSizeHorizontal * 4.5,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                  centerTitle: true,
+                  backgroundColor: AppColors.appBarColor,
+                )
+              : null,
           backgroundColor: AppColors.backgroundColor,
           body: controller.isLoading.value
               ? loadingWidget()
@@ -41,15 +47,22 @@ class HomeView extends GetView<HomeViewCtl> {
                       Center(
                         child: Container(
                           margin: EdgeInsets.only(
-                              top: SizeConfig.blockSizeVertical * 8),
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          padding: EdgeInsets.all(
-                              SizeConfig.blockSizeHorizontal * 6.2),
+                              top: SizeConfig.blockSizeVertical * 7),
+                          width: MediaQuery.of(context).size.width * 0.92,
+                          padding: EdgeInsets.only(
+                              right: SizeConfig.blockSizeHorizontal * 6,
+                              left: SizeConfig.blockSizeHorizontal * 6,
+                              bottom: SizeConfig.blockSizeHorizontal * 12,
+                              top: SizeConfig.blockSizeHorizontal * 8),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               // colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
                               // colors: [Color(0xFFFF6D00), Color.fromARGB(255, 255, 208, 0)],
-                              colors: [Color(0xFFFF2828), Color(0xFFC40000)],
+                              colors: [
+                                Color(0xFFF64343),
+                                Color(0xFFB52626),
+                              ],
+                              // colors: [Color(0xFFFF2828), Color(0xFFC40000)],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
@@ -73,9 +86,10 @@ class HomeView extends GetView<HomeViewCtl> {
                               ),
                               verticalSpace(SizeConfig.blockSizeVertical * 2),
                               Text(
+                                textAlign: TextAlign.center,
                                 controller.videoAuthor.value != ""
                                     ? controller.videoAuthor.value
-                                    : 'AI YouTube Extractor',
+                                    : 'VidAssist AI',
                                 style: GoogleFonts.akatab(
                                   fontSize:
                                       SizeConfig.blockSizeHorizontal * 7.3,
@@ -87,10 +101,85 @@ class HomeView extends GetView<HomeViewCtl> {
                               controller.isUrlProcessed.value
                                   ? optionsWidget()
                                   : urlAndExtract(),
+                              verticalSpace(SizeConfig.blockSizeVertical * 5),
+                              Container(
+                                alignment: Alignment.bottomCenter,
+                                width: double.infinity,
+                                child: Text(
+                                  "Made with ❤️ by Sawanlimo",
+                                  style: GoogleFonts.alata(
+                                      color: Colors.white,
+                                      fontSize:
+                                          SizeConfig.blockSizeHorizontal * 3.5,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              )
                             ],
                           ),
                         ),
                       ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: SizeConfig.blockSizeVertical * 10,
+                          margin: EdgeInsets.only(
+                              top: SizeConfig.blockSizeVertical * 23),
+                          width: double.infinity,
+                          child: GestureDetector(
+                            onTap: () async {
+                              final InAppReview inAppReview =
+                                  InAppReview.instance;
+
+                              inAppReview.openStoreListing(
+                                  appStoreId: '...', microsoftStoreId: '...');
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      bottom:
+                                          SizeConfig.blockSizeVertical * 0.5),
+                                  child: Text(
+                                    "Rate Us",
+                                    style: GoogleFonts.alata(
+                                        color: Colors.black,
+                                        fontSize:
+                                            SizeConfig.blockSizeHorizontal *
+                                                3.5,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.black,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.black,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.black,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.black,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.black,
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -188,13 +277,13 @@ class HomeView extends GetView<HomeViewCtl> {
                               child: Icon(
                                 Icons.autorenew,
                                 color: Colors.red,
-                                size: SizeConfig.blockSizeHorizontal * 6.3,
+                                size: SizeConfig.blockSizeHorizontal * 5,
                               ),
                             ),
                             Text('Begin Processing',
                                 style: TextStyle(
                                   fontSize:
-                                      SizeConfig.blockSizeHorizontal * 4.1,
+                                      SizeConfig.blockSizeHorizontal * 3.3,
                                   color: Colors.red,
                                   fontWeight: FontWeight.w800,
                                   fontFamily: 'Poppins',
@@ -250,7 +339,7 @@ class HomeView extends GetView<HomeViewCtl> {
                         offset: Offset(0, 10),
                       ),
                     ],
-                    color: const Color.fromARGB(255, 255, 56, 42),
+                    color: Color.fromARGB(255, 246, 73, 73),
                     borderRadius: BorderRadius.circular(
                         SizeConfig.blockSizeHorizontal * 10),
                   ),
@@ -427,34 +516,119 @@ class HomeView extends GetView<HomeViewCtl> {
 
   Widget loadingWidget() {
     return Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: Color(0xFFFF2828),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 10),
-            child: Center(
-              child: LoadingAnimationWidget.staggeredDotsWave(
-                color: const Color.fromARGB(255, 255, 255, 255),
-                size: SizeConfig.blockSizeHorizontal * 30,
-              ),
-            ),
-          ),
-          Container(
-              padding: EdgeInsets.all(SizeConfig.blockSizeVertical * 4.5),
-              child: Text(
-                controller.loadingMessage.value,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.actor(
-                    color: Colors.white,
-                    textStyle: TextStyle(
-                      fontSize: SizeConfig.blockSizeHorizontal * 6,
-                      fontWeight: FontWeight.w900,
-                    )),
-              ))
+      child: AnimateGradient(
+        duration: Duration(seconds: 4),
+        primaryBegin: Alignment.topLeft, // 🔻 Start from Bottom Left
+        primaryEnd: Alignment.center, // 🔺 Move towards Top Right
+        secondaryBegin: Alignment.center, // 🔺 Start from Top Right
+        secondaryEnd: Alignment.bottomRight, // 🔻 Move towards Bottom Left
+        primaryColors: const [
+          Color(0xFF8B0000), // 🔥 Darkest Deep Red (Bottom)
+          Color(0xFFB22222), // ❤️ Firebrick Red (Midway)
+          Color(0xFFD64545), // 🌅 Muted Warm Red (Top)
         ],
+        secondaryColors: const [
+          Color(0xFFA52A2A), // 🔴 Dark Brick Red (Bottom)
+          Color(0xFFCC3A3A), // 🌟 Rich Bold Red (Midway)
+          Color(0xFFE06666), // 🌅 Soft Faded Red (Top)
+        ],
+
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          // color: Colors.white,
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.3,
+              ),
+              Container(
+                margin:
+                    EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 12),
+                child: Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.white,
+                    size: SizeConfig.blockSizeHorizontal * 26,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(SizeConfig.blockSizeVertical * 4.5),
+                child: SizedBox(
+                  height: SizeConfig.blockSizeVertical * 8,
+                  child: Obx(() => Text(
+                        controller.loadingMessage.value,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.actor(
+                            color: Colors.white,
+                            textStyle: TextStyle(
+                              fontSize: SizeConfig.blockSizeHorizontal * 6,
+                              fontWeight: FontWeight.w900,
+                            )),
+                      )),
+                ),
+              ),
+              SizedBox(
+                height: SizeConfig.blockSizeVertical * 20,
+              ),
+              SizedBox(
+                height: SizeConfig.blockSizeVertical * 3,
+                child: AnimatedTextKit(
+                  pause: Duration(milliseconds: 1200),
+                  repeatForever: true,
+                  animatedTexts: [
+                    RotateAnimatedText(
+                      controller.loadingMotivationMessages[0],
+                      textStyle: GoogleFonts.abel(
+                          color: Colors.white,
+                          textStyle: TextStyle(
+                            fontSize: SizeConfig.blockSizeHorizontal * 4.2,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    ),
+                    RotateAnimatedText(
+                      controller.loadingMotivationMessages[1],
+                      textStyle: GoogleFonts.abel(
+                          color: Colors.white,
+                          textStyle: TextStyle(
+                            fontSize: SizeConfig.blockSizeHorizontal * 4.2,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    ),
+                    RotateAnimatedText(
+                      controller.loadingMotivationMessages[2],
+                      textStyle: GoogleFonts.abel(
+                          color: Colors.white,
+                          textStyle: TextStyle(
+                            fontSize: SizeConfig.blockSizeHorizontal * 4.2,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    ),
+                    RotateAnimatedText(
+                      controller.loadingMotivationMessages[3],
+                      textStyle: GoogleFonts.abel(
+                          color: Colors.white,
+                          textStyle: TextStyle(
+                            fontSize: SizeConfig.blockSizeHorizontal * 4.2,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    ),
+                    RotateAnimatedText(
+                      controller.loadingMotivationMessages[4],
+                      textStyle: GoogleFonts.abel(
+                          color: Colors.white,
+                          textStyle: TextStyle(
+                            fontSize: SizeConfig.blockSizeHorizontal * 4.2,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

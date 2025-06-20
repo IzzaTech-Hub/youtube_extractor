@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "985769316982",
+    "project_id": "vidassistant",
+    "storage_bucket": "vidassistant.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985769316982:android:7ca35b0a04ca1fcbb24557",
+        "android_client_info": {
+          "package_name": "ai.video.summarizer.chatai.videochat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7oC--VtYrX2qUBukEHyK-jeVRjVIRt5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SizeConfig {
-  static late  MediaQueryData _mediaQueryData;
+  static late MediaQueryData _mediaQueryData;
   static late double screenWidth;
   static late double screenHeight;
   static late double blockSizeHorizontal;
@@ -51,38 +51,37 @@ class SizeConfig {
     _mediaQueryData = MediaQuery.of(context);
     screenWidth = _mediaQueryData.size.width;
     screenHeight = _mediaQueryData.size.height;
-    blockSizeHorizontal = screenWidth/ 100;
+    blockSizeHorizontal = screenWidth / 100;
     blockSizeVertical = screenHeight / 100;
 
     //Padding
-    tenPercentWidth = blockSizeHorizontal*10;
-    thirtyFourPercentHeight = blockSizeVertical*34;
-    fiftyThreePercentHeight = blockSizeVertical*53;
-    fortyPercentHeight = blockSizeVertical*40;
-    thirtySevenPercentHeight = blockSizeVertical*37;
-    thirtyEightPercentHeight = blockSizeVertical*38;
-    seventyPercentHeight = blockSizeVertical*70;
-    seventyEightPercentHeight = blockSizeVertical*78;
-    eightySixPercentHeight = blockSizeVertical*86;
-    ninetyThreePercentHeight = blockSizeVertical*93;
-    twentyEightPercentHeight = blockSizeVertical*28;
-    eighteenPercentHeight = blockSizeVertical*18;
-    sixtyPercentHeight = blockSizeVertical*60;
-    thirtySixPercentHeight = blockSizeVertical*36;
-    eightyPercentWidth = blockSizeHorizontal*80;
-    sixtyPercentWidth = blockSizeHorizontal*60;
-    eightPercentWidth = blockSizeHorizontal*8;
-    eightyFivePercentWidth = blockSizeHorizontal*85;
-    sixtyFivePercentWidth = blockSizeHorizontal*65;
-    fiftyPercentWidth = blockSizeHorizontal*50;
-    seventyFivePercentWidth = blockSizeHorizontal*75;
-    seventyPercentWidth = blockSizeHorizontal*70;
-    thirtyPercentWidth = blockSizeHorizontal*30;
-    twentyPercentWidth = blockSizeHorizontal*20;
+    tenPercentWidth = blockSizeHorizontal * 10;
+    thirtyFourPercentHeight = blockSizeVertical * 34;
+    fiftyThreePercentHeight = blockSizeVertical * 53;
+    fortyPercentHeight = blockSizeVertical * 40;
+    thirtySevenPercentHeight = blockSizeVertical * 37;
+    thirtyEightPercentHeight = blockSizeVertical * 38;
+    seventyPercentHeight = blockSizeVertical * 70;
+    seventyEightPercentHeight = blockSizeVertical * 78;
+    eightySixPercentHeight = blockSizeVertical * 86;
+    ninetyThreePercentHeight = blockSizeVertical * 93;
+    twentyEightPercentHeight = blockSizeVertical * 28;
+    eighteenPercentHeight = blockSizeVertical * 18;
+    sixtyPercentHeight = blockSizeVertical * 60;
+    thirtySixPercentHeight = blockSizeVertical * 36;
+    eightyPercentWidth = blockSizeHorizontal * 80;
+    sixtyPercentWidth = blockSizeHorizontal * 60;
+    eightPercentWidth = blockSizeHorizontal * 8;
+    eightyFivePercentWidth = blockSizeHorizontal * 85;
+    sixtyFivePercentWidth = blockSizeHorizontal * 65;
+    fiftyPercentWidth = blockSizeHorizontal * 50;
+    seventyFivePercentWidth = blockSizeHorizontal * 75;
+    seventyPercentWidth = blockSizeHorizontal * 70;
+    thirtyPercentWidth = blockSizeHorizontal * 30;
+    twentyPercentWidth = blockSizeHorizontal * 20;
     paddingSmall = blockSizeHorizontal * 2.5;
     paddingLarge = blockSizeHorizontal * 8;
-    paddingXLarge=blockSizeHorizontal * 10;
-
+    paddingXLarge = blockSizeHorizontal * 10;
 
     //margin
     marginVerticalXXsmall = blockSizeHorizontal;
