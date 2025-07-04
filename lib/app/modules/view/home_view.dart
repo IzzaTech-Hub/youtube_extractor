@@ -5,18 +5,69 @@ import 'package:flutter/services.dart';
 import 'package:flutter_launch_store/flutter_launch_store.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:simple_icons/simple_icons.dart';
 import 'package:youtube_extracter/app/modules/controller/home_view_ctl.dart';
+import 'package:youtube_extracter/app/provider/admob_ads_provider.dart';
+import 'package:youtube_extracter/app/utills/app_string.dart';
 import 'package:youtube_extracter/app/utills/colors.dart';
 import 'package:youtube_extracter/app/utills/size_config.dart';
 
 class HomeView extends GetView<HomeViewCtl> {
-  const HomeView({super.key});
+   HomeView({super.key});
+
+   // // // Banner Ad Implementation start // // //
+//? Commented by jamal start
+  late BannerAd myBanner;
+  RxBool isBannerLoaded = false.obs;
+
+  initBanner() {
+    BannerAdListener listener = BannerAdListener(
+      // Called when an ad is successfully received.
+      onAdLoaded: (Ad ad) {
+        print('Ad loaded.');
+        isBannerLoaded.value = true;
+      },
+      // Called when an ad request failed.
+      onAdFailedToLoad: (Ad ad, LoadAdError error) {
+        // Dispose the ad here to free resources.
+        ad.dispose();
+        print('Ad failed to load: $error');
+      },
+      // Called when an ad opens an overlay that covers the screen.
+      onAdOpened: (Ad ad) {
+        print('Ad opened.');
+      },
+      // Called when an ad removes an overlay that covers the screen.
+      onAdClosed: (Ad ad) {
+        print('Ad closed.');
+      },
+      // Called when an impression occurs on the ad.
+      onAdImpression: (Ad ad) {
+        print('Ad impression.');
+      },
+    );
+
+    myBanner = BannerAd(
+      adUnitId: AppStrings.ADMOB_BANNER,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: listener,
+    );
+    myBanner.load();
+  } //? Commented by jamal end
+
+  /// Banner Ad Implementation End ///
+
+
+
 
   @override
   Widget build(BuildContext context) {
+    initBanner();
+    
     // SizeConfig().init(context);
     return WillPopScope(
       onWillPop: () {
@@ -44,10 +95,21 @@ class HomeView extends GetView<HomeViewCtl> {
               : SingleChildScrollView(
                   child: Column(
                     children: [
+                       verticalSpace(SizeConfig.blockSizeVertical * 2),
+                  
+                          Obx(() => isBannerLoaded.value &&
+                    AdMobAdsProvider.instance.isAdEnable.value
+                                  ? Container(
+                    height: AdSize.banner.height.toDouble(),
+                    child: AdWidget(ad: myBanner))
+                                  : Container(
+                                   
+                                  )), 
+                              
                       Center(
                         child: Container(
                           margin: EdgeInsets.only(
-                              top: SizeConfig.blockSizeVertical * 7),
+                              top: SizeConfig.blockSizeVertical * 2),
                           width: MediaQuery.of(context).size.width * 0.92,
                           padding: EdgeInsets.only(
                               right: SizeConfig.blockSizeHorizontal * 6,
@@ -129,7 +191,7 @@ class HomeView extends GetView<HomeViewCtl> {
                             onTap: () async {
                               final InAppReview inAppReview =
                                   InAppReview.instance;
-
+                        
                               inAppReview.openStoreListing(
                                   appStoreId: '...', microsoftStoreId: '...');
                             },
@@ -155,15 +217,15 @@ class HomeView extends GetView<HomeViewCtl> {
                                   children: [
                                     Icon(
                                       Icons.star,
-                                      color: Colors.black,
+                                      color: Colors.amber,
                                     ),
                                     Icon(
                                       Icons.star,
-                                      color: Colors.black,
+                                      color: Colors.amber,
                                     ),
                                     Icon(
                                       Icons.star,
-                                      color: Colors.black,
+                                      color: Colors.amber,
                                     ),
                                     Icon(
                                       Icons.star,
@@ -326,6 +388,7 @@ class HomeView extends GetView<HomeViewCtl> {
                 top: SizeConfig.blockSizeVertical * 4),
             child: GestureDetector(
               onTap: () {
+                AdMobAdsProvider.instance.showInterstitialAd((){});
                 controller.setToDefault();
               },
               child: Container(

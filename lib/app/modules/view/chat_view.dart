@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:youtube_extracter/app/modules/controller/chat_controller.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:youtube_extracter/app/provider/admob_ads_provider.dart';
 import 'package:youtube_extracter/app/utills/colors.dart';
 import 'package:youtube_extracter/app/utills/size_config.dart';
 import 'package:youtube_extracter/app/widgets/feedback_widget.dart';
@@ -62,7 +64,10 @@ class ChatView extends GetView<ChatController> {
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            AdMobAdsProvider.instance.showInterstitialAd((){});
+            Get.back();
+          } 
         ),
       ),
       body: Column(

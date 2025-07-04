@@ -7,6 +7,7 @@ import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:simple_icons/simple_icons.dart';
 import 'package:youtube_extracter/app/modules/summary/controllers/summary_controller.dart';
+import 'package:youtube_extracter/app/provider/admob_ads_provider.dart';
 import 'package:youtube_extracter/app/utills/colors.dart';
 import 'package:youtube_extracter/app/utills/size_config.dart';
 import 'package:youtube_extracter/app/widgets/start_feedback_widget.dart';
@@ -135,7 +136,12 @@ class SummaryView extends GetView<SummaryController> {
           // ],
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-            onPressed: () => Get.back(),
+            onPressed: () {
+              AdMobAdsProvider.instance.showInterstitialAd(() {
+                Get.back();
+              });
+            },
+            
           )),
       backgroundColor: AppColors.backgroundColor,
       body: Container(
