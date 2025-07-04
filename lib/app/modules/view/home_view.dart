@@ -16,9 +16,9 @@ import 'package:youtube_extracter/app/utills/colors.dart';
 import 'package:youtube_extracter/app/utills/size_config.dart';
 
 class HomeView extends GetView<HomeViewCtl> {
-   HomeView({super.key});
+  HomeView({super.key});
 
-   // // // Banner Ad Implementation start // // //
+  // // // Banner Ad Implementation start // // //
 //? Commented by jamal start
   late BannerAd myBanner;
   RxBool isBannerLoaded = false.obs;
@@ -61,13 +61,10 @@ class HomeView extends GetView<HomeViewCtl> {
 
   /// Banner Ad Implementation End ///
 
-
-
-
   @override
   Widget build(BuildContext context) {
     initBanner();
-    
+
     // SizeConfig().init(context);
     return WillPopScope(
       onWillPop: () {
@@ -95,17 +92,13 @@ class HomeView extends GetView<HomeViewCtl> {
               : SingleChildScrollView(
                   child: Column(
                     children: [
-                       verticalSpace(SizeConfig.blockSizeVertical * 2),
-                  
-                          Obx(() => isBannerLoaded.value &&
-                    AdMobAdsProvider.instance.isAdEnable.value
-                                  ? Container(
-                    height: AdSize.banner.height.toDouble(),
-                    child: AdWidget(ad: myBanner))
-                                  : Container(
-                                   
-                                  )), 
-                              
+                      verticalSpace(SizeConfig.blockSizeVertical * 2),
+                      Obx(() => isBannerLoaded.value &&
+                              AdMobAdsProvider.instance.isAdEnable.value
+                          ? Container(
+                              height: AdSize.banner.height.toDouble(),
+                              child: AdWidget(ad: myBanner))
+                          : Container()),
                       Center(
                         child: Container(
                           margin: EdgeInsets.only(
@@ -191,7 +184,7 @@ class HomeView extends GetView<HomeViewCtl> {
                             onTap: () async {
                               final InAppReview inAppReview =
                                   InAppReview.instance;
-                        
+
                               inAppReview.openStoreListing(
                                   appStoreId: '...', microsoftStoreId: '...');
                             },
@@ -251,6 +244,8 @@ class HomeView extends GetView<HomeViewCtl> {
   }
 
   Column urlAndExtract() {
+    // controller.urlController.text = "";
+    "https://www.youtube.com/watch?v=WguIIylkN8A";
     return Column(
       children: [
         Container(
@@ -388,7 +383,7 @@ class HomeView extends GetView<HomeViewCtl> {
                 top: SizeConfig.blockSizeVertical * 4),
             child: GestureDetector(
               onTap: () {
-                AdMobAdsProvider.instance.showInterstitialAd((){});
+                AdMobAdsProvider.instance.showInterstitialAd(() {});
                 controller.setToDefault();
               },
               child: Container(
@@ -435,7 +430,8 @@ class HomeView extends GetView<HomeViewCtl> {
           Container(
             margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 4),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
                   onTap: () {
@@ -482,47 +478,47 @@ class HomeView extends GetView<HomeViewCtl> {
                         ),
                       )),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    controller.navigateToTranscript();
-                  },
-                  child: Container(
-                      height: SizeConfig.blockSizeVertical * 5,
-                      width: SizeConfig.blockSizeHorizontal * 36,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 9,
-                            offset: Offset(0, 12),
-                          ),
-                        ],
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(
-                            SizeConfig.blockSizeHorizontal * 10),
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  right: SizeConfig.blockSizeHorizontal * 3),
-                              child: Icon(Icons.format_list_bulleted_outlined,
-                                  color: Colors.red),
-                            ),
-                            Text('Transcript',
-                                style: TextStyle(
-                                  fontSize:
-                                      SizeConfig.blockSizeHorizontal * 4.1,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w800,
-                                  fontFamily: 'Poppins',
-                                )),
-                          ],
-                        ),
-                      )),
-                ),
+                // GestureDetector(
+                //   onTap: () {
+                //     controller.navigateToTranscript();
+                //   },
+                //   child: Container(
+                //       height: SizeConfig.blockSizeVertical * 5,
+                //       width: SizeConfig.blockSizeHorizontal * 36,
+                //       decoration: BoxDecoration(
+                //         boxShadow: [
+                //           BoxShadow(
+                //             color: Colors.black.withOpacity(0.3),
+                //             blurRadius: 9,
+                //             offset: Offset(0, 12),
+                //           ),
+                //         ],
+                //         color: Colors.white,
+                //         borderRadius: BorderRadius.circular(
+                //             SizeConfig.blockSizeHorizontal * 10),
+                //       ),
+                //       child: Center(
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.center,
+                //           children: [
+                //             Padding(
+                //               padding: EdgeInsets.only(
+                //                   right: SizeConfig.blockSizeHorizontal * 3),
+                //               child: Icon(Icons.format_list_bulleted_outlined,
+                //                   color: Colors.red),
+                //             ),
+                //             Text('Transcript',
+                //                 style: TextStyle(
+                //                   fontSize:
+                //                       SizeConfig.blockSizeHorizontal * 4.1,
+                //                   color: Colors.red,
+                //                   fontWeight: FontWeight.w800,
+                //                   fontFamily: 'Poppins',
+                //                 )),
+                //           ],
+                //         ),
+                //       )),
+                // ),
               ],
             ),
           ),

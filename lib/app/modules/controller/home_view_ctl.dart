@@ -87,7 +87,7 @@ class HomeViewCtl extends GetxController {
 
         final captionScraper = YouTubeCaptionScraper();
         final captionTracks = await captionScraper.getCaptionTracks(videoUrl);
-        developer.log("caption tracks: ${captionTracks}}");
+        developer.log("caption tracks: ${captionTracks[0]}");
 
         if (captionTracks.isEmpty) {
           Get.snackbar(
@@ -100,14 +100,54 @@ class HomeViewCtl extends GetxController {
           throw Exception("No captions available for this video.");
         }
 
-        final subtitles = await captionScraper.getSubtitles(captionTracks[0]);
+        final subtitle = await captionScraper.getSubtitles(captionTracks[0]);
+        // print("subtitle: $subtitle");
+        // print("videoUrl: $videoUrl");
+        // var yt = YoutubeExplode();
+
+        // var trackManifest =
+        //     await yt.videos.closedCaptions.getManifest(videoUrl);
+        // // await yt.videos.closedCaptions.getManifest(videoUrl);
+        // print("trackManifest: ${trackManifest.tracks[0].language}");
+        // var trackInfo = trackManifest.tracks; // Get all caption.
+        // // var trackInfo =
+        // //     trackManifest.getByLanguage('Englisg'); // Get english caption.
+        // print("trackInfo: $trackInfo");
+        // // String subtitle = "";
+        // if (trackInfo != null) {
+        //   print("here"); // Get the actual closed caption track.
+        //   // var track = await yt.videos.closedCaptions.get(trackInfo[0]);
+        //   // print("track: $track");
+        //   // // Get the caption displayed at 1:01
+        //   // var caption = track.getByTime(Duration(seconds: 61));
+        //   // print("caption: $caption");
+        //   // subtitle = caption?.text ?? ""; // "And the game was afoot."
+        //   // print("subtitle: $subtitle");
+        // }
 
         // loadingMessage.value = "Initializing your AI assistant...";
         // await Future.delayed(Duration(milliseconds: 1000));
+//-------------------------------------------------------------------------------------------------------------------------------------
+        // Use Gemini to generate subtitles from video details
+//         final model = GenerativeModel(
+//           model: 'gemini-2.5-pro',
+//           apiKey: RCVariables.apiKey,
+//         );
+
+//         final prompt = '''
+// This is vedio Url: $videoUrl
+// Give me exact word by word transcript nerator is saying in this vedio
+// ''';
+
+//         final response = await model.generateContent([Content.text(prompt)]);
+//         final subtitle = response.text ?? '';
+//         print("prompt: $prompt");
+//         print("subtitle: $subtitle");
+//-------------------------------------------------------------------------------------------------------------------------------------
 
         responseStatus.value = 200;
         mappedTranscript.value = {
-          "transcriptList": subtitles,
+          "transcriptList": subtitle,
           "videoAuthor": videoAuthor.value,
           "videoTitle": videoTitle.value,
           "videoDescription": videoDescription.value
@@ -179,12 +219,13 @@ class HomeViewCtl extends GetxController {
         throw Exception("No transcript data available.");
       }
 
-      final chat = model.startChat(history: transcriptList);
+      // final chat = model.startChat(history: transcriptList);
+      final videoUrl = urlController.text.trim();
 
       var prompt =
-          """Generate a well-structured and clearly formatted summary of the given transcript.  
+          """Generate a well-structured and clearly formatted summary of youtube vedio $videoUrl  
 Ensure the summary is segmented into paragraphs for readability.  
-
+title of vedio is $videoTitle, Description: $videoDescription, Author: $videoAuthor
 Use Markdown formatting as follows:  
 - **Bold** speaker names, followed by a **relevant** timestamp in `[hh:mm:ss]` format to indicate major topic shifts.  
 - Use headings (`#`, `##`, `###`, etc.) to indicate key sections of the discussion.  
@@ -192,21 +233,35 @@ Use Markdown formatting as follows:
 - Format technical terms or significant phrases using code blocks.  
 - Use blockquotes to emphasize important statements or takeaways.  
 
-Timestamps should be placed only at points where the topic significantly shifts, **not for every sentence**.  
-Ensure the summary flows naturally, maintaining clarity and coherence.  
-Deliver the response **as plain text**, without enclosing it in any container.  
-Do not include any introductory or concluding messages—only the structured summary itself.  
-
-
 """;
+//       var prompt =
+//           """Generate a well-structured and clearly formatted summary of the given transcript.
+// Ensure the summary is segmented into paragraphs for readability.
+
+// Use Markdown formatting as follows:
+// - **Bold** speaker names, followed by a **relevant** timestamp in `[hh:mm:ss]` format to indicate major topic shifts.
+// - Use headings (`#`, `##`, `###`, etc.) to indicate key sections of the discussion.
+// - Highlight key points using bullet points or numbered lists when necessary.
+// - Format technical terms or significant phrases using code blocks.
+// - Use blockquotes to emphasize important statements or takeaways.
+
+// Timestamps should be placed only at points where the topic significantly shifts, **not for every sentence**.
+// Ensure the summary flows naturally, maintaining clarity and coherence.
+// Deliver the response **as plain text**, without enclosing it in any container.
+// Do not include any introductory or concluding messages—only the structured summary itself.
+
+// """;
 
       GenerateContentResponse response =
-          await chat.sendMessage(Content.text(prompt));
+          await model.generateContent([Content.text(prompt)]);
+      // await chat.sendMessage(Content.text(prompt));
       print("This is summary: ${response.text}");
 
       if (response.text == null || response.text!.trim().isEmpty) {
         // Retry once before throwing an error
-        response = await chat.sendMessage(Content.text(prompt));
+        response = await model.generateContent([Content.text(prompt)]);
+
+        // response = await chat.sendMessage(Content.text(prompt));
         if (response.text == null || response.text!.trim().isEmpty) {
           Get.snackbar(
             'Server error',
@@ -325,7 +380,6 @@ Do not include any introductory or concluding messages—only the structured sum
 
   Future<bool> backButtonHandle() async {
     if (isBackPressed) {
-      
       return true; // Exit app if pressed within 1.5 sec
     }
 
